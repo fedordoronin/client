@@ -1,0 +1,13 @@
+<app-navbar *ngIf="user" [user]="user" [title]="title"></app-navbar>
+
+<div class="container" *ngIf="message">
+    <div class="alert alert-warning justify-content-center mt-4 text-center col-sm-12 col-md-8 mx-auto" role="alert">
+        {{ message }}
+    </div>
+</div>
+
+<main>
+    <router-outlet></router-outlet>
+</main>
+
+<app-notify></app-notify>

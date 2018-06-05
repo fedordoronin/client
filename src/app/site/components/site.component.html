@@ -1,0 +1,45 @@
+
+<div class="sticky-container">
+    <nav class="navbar navbar-dark bg-dark sticky-top sticky-header navbar-expand-lg">
+    
+        <a routerLink="/" class="navbar-brand">Head&Heart</a>
+    
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    
+        <div class="collapse navbar-collapse" id="navbarToggle">
+
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <li class="nav-item"><a class="nav-link" routerLink="tax-info">О налогах</a></li>
+                <li class="nav-item"><a class="nav-link" routerLink="learn">Обучение</a></li>
+                <li class="nav-item"><a class="nav-link" routerLink="about">О нас</a></li>
+            </ul>
+    
+            <div class="d-none d-sm-block">
+                <div class="text-nowrap text-white">+7&nbsp;(3852)&nbsp;99-88-98&nbsp;<span class="text-muted">(многоканальный)</span></div>
+            </div>
+        </div>
+    
+    </nav>
+    
+    <main class="sticky-content">
+        <router-outlet></router-outlet>
+    </main>
+    
+    <footer class="footer sticky-footer">
+        <div class="container">
+            <div class="row justify-content-between">
+                <div>
+                    <a href="http://vk.com/headnheart"><i class="fa fa-vk" title="ВКонтакте"></i></a>
+                    <a href="mailto:hi@headnheart.ru"><i class="fa fa-envelope" title="Написать письмо"></i></a>
+                </div>
+                <div class="links_footer">
+                    <a href="https://biz.mail.ru/login/headnheart.ru">Служебная почта</a><br>
+                    <a href="/office">Head&Heart Online</a>
+                </div>
+                <span>© 2013–2018 Head&amp;Heart. Является зарегистрированным товарным знаком.</span>
+            </div>
+        </div>
+    </footer>
+</div>

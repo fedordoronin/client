@@ -1,0 +1,98 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light m-0">
+  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a class="navbar-brand" href="/office">{{ title }}</a>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav mr-auto">
+
+      <li class="nav-item" *ngIf="'client' | access">
+        <a class="nav-link" routerLink="company">{{ ('ROLE_CLIENT' | role) ? 'Мои компании' : 'Компании' }}</a>
+      </li>
+
+      <li class="nav-item" *ngIf="'associate' | access">
+        <a class="nav-link" routerLink="users">{{ ('ROLE_ASSOCIATE' | role) ? 'Клиенты' : 'Пользователи' }}</a>
+      </li>
+
+      <li class="nav-item dropdown" *ngIf="'associate' | access">
+        <a class="nav-link" routerLink="mailing">Рассылка</a>
+      </li>
+
+      <li class="nav-item dropdown" *ngIf="'admin' | access">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Администратирование</a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" href="#" routerLink="news">Новое на сайте</a>
+          <a class="dropdown-item" data-toggle="modal" data-target=".modal-message">Уведомление</a>
+        </div>
+      </li>
+
+      <li *ngIf="user" class="nav-item dropdown nav-profile" style="margin-left: auto">
+        <div class="p-1">
+          <span *ngIf="news?.length > 0 && 'associate' | access" class="badge badge-warning pointer" data-toggle="modal" data-target=".modal-news">Новое на сайте</span>
+          <span *ngIf="'ROLE_ADMIN' | role" class="badge badge-success">Администратор</span>
+          <span *ngIf="user.position" class="badge badge-info d-inline">{{ user.position.title }}</span>
+          <a class="nav-link dropdown-toggle d-inline" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{ user.name }}
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item" href="#" (click)="logOut()">Выход</a>
+          </div>
+        </div>
+      </li>
+      
+    </ul>
+  </div>
+</nav>
+
+<!-- Modal news -->
+<div class="modal fade modal-news">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Новое на сайте</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card mb-2" *ngFor="let n of news">
+          <h6 class="card-header p-2">{{ n.title }} <small class="text-muted">({{ n.date | date: 'dd/MM/yyyy H:mm' }})</small></h6>
+          <div class="card-block p-2">
+            <p class="card-text">{{ n.text }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ---------- -->
+
+<!-- Modal message -->
+<div class="modal fade modal-message">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Уведомление</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form #fMessage="ngForm">
+          <div class="form-group">
+            <label for="text">Сообщение</label>
+            <textarea [(ngModel)]="message" class="form-control" name="text" id="text" rows="5"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-dismiss="modal" (click)="setMessage()">Сохранить</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ---------- -->

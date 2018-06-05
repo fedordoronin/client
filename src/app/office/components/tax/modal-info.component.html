@@ -1,0 +1,67 @@
+<!-- Modal Info -->
+<div class="modal fade modal-info">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Инфрмация</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info" role="alert">
+                    <strong>Запись создана:</strong> {{ formData?.date_create | date: 'dd-MM-yyyy H:mm'}}
+                </div>
+                <div *ngIf="formData?.leader || formData?.accountant || formData?.accountant_z">
+                    <span>Ответственные:</span>
+
+                    <div *ngIf="formData.leader" class="small m-2">    
+                        <div class="card text-center">
+                            <div class="card-header p-1">
+                                {{ formData.leader.user.position?.title }} <p class="text-muted m-1">(Все поля)</p>
+                            </div>
+                            <div class="card-block">
+                                <h5 class="card-title m-1">{{ formData.leader.user.name }}</h5>
+                            </div>
+                            <div class="card-footer text-muted">
+                                {{ formData.leader.date_change | date: 'dd-MM-yyyy H:mm' }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="formData.accountant" class="small m-2">    
+                        <div class="card text-center">
+                            <div class="card-header p-1">
+                                {{ formData.accountant.user.position?.title }} <p class="text-muted m-1">(ЕНВД, УСН, НДС, Прибыль ФБ, Прибыль суб. РФ)</p>
+                            </div>
+                            <div class="card-block">
+                                <h5 class="card-title m-1">{{ formData.accountant.user.name }}</h5>
+                            </div>
+                            <div class="card-footer text-muted">
+                                {{ formData.accountant.date_change | date: 'dd-MM-yyyy H:mm' }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="formData.accountant_z" class="small m-2">
+                        <div class="card text-center">
+                            <div class="card-header p-1">
+                                {{ formData.accountant_z.user.position.title }} <p class="text-muted m-1">(ФСС, ФСС НС, ФОМС, ПФР, НДФЛ)</p>
+                            </div>
+                            <div class="card-block">
+                                <h5 class="card-title m-1">{{ formData.accountant_z.user.name }}</h5>
+                            </div>
+                            <div class="card-footer text-muted">
+                                {{ formData.accountant_z.date_change | date: 'dd-MM-yyyy H:mm' }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ------------ -->

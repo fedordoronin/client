@@ -1,0 +1,112 @@
+<div class="container">
+    <h1 class="h4 mt-4">Новое на сайте</h1>
+
+    <div class="jumbotron p-2 mt-4">
+        <button class="btn btn-success btn-sm" data-toggle="modal" data-target=".modal-add-news" (click)="createNewsData = {}; editMode = false">Добавить новость</button>
+    </div>
+
+    <div *ngIf="allNewsList?.length > 0; then listNews else noNews"></div>
+
+    <ng-template #listNews>
+
+        <div class="table-responsive text-nowrap">
+            <table class="table table-sm small table-stripped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Заголовок</th>
+                        <th>Дата</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let news of newsList; let i = index">
+                        <th>{{ i + 1 }}</th>
+                        <th>{{ news.title }}</th>
+                        <th>{{ news.date | date: 'dd/MM/yyyy H:mm' }}</th>
+                        <th>
+
+                            <a class="btn-icon" data-toggle="modal" data-target=".modal-add-news" (click)="createNewsData = news; editMode = true">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true" title="Просмотреть/Изменить"></i>
+                            </a>
+
+                            <a class="btn-icon" data-toggle="modal" data-target=".modal-accept-delete" (click)="deleteNewsId = news._id">
+                                <i class="fa fa-trash" aria-hidden="true" title="Удалить"></i>
+                            </a>
+
+                        </th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <pager (onPageChange)="pageChange($event)" [list]="allNewsList"></pager>
+
+    </ng-template>
+
+    <ng-template #noNews>
+        <div class="alert alert-warning pagination justify-content-center mt-4" role="alert">
+            <h3 class="alert-heading">Новости отсутствуют</h3>
+        </div>
+    </ng-template>
+
+</div>
+
+<!-- Modal add news -->
+<div class="modal fade modal-add-news">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Добавить новость</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form #formCreate="ngForm">
+                    <div class="form-group">
+                        <label for="title">Заголовок</label>
+                        <input [(ngModel)]="createNewsData.title" type="text" name="title" class="form-control" id="title" required>
+                    </div>
+            
+                    <div class="form-group">
+                        <label for="text">Текст новости</label>
+                        <textarea [(ngModel)]="createNewsData.text" class="form-control" name="text" id="text" rows="3" required></textarea>
+                    </div>
+                </form>        
+            </div>
+            <div class="modal-footer">
+                <button *ngIf="!editMode" data-dismiss="modal" type="button" class="btn btn-primary" [disabled]="formCreate.invalid" (click)="createNews()">Добавить</button>
+                <button *ngIf="editMode" data-dismiss="modal" type="button" class="btn btn-primary" [disabled]="formCreate.invalid" (click)="updateNews()">Изменить</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ------------- -->
+
+<!-- Modal accept delete news -->
+<div class="modal fade modal-accept-delete">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Подтвердите действие</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="alert alert-danger pagination justify-content-center mt-4" role="alert">
+                <span>Вы действительно ходите удалить новость?</span>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" (click)="removeNews()" data-dismiss="modal">Удалить</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+        </div>
+        </div>
+    </div>
+</div>
+<!-- ------------- -->
+
+<page-loader [pageLoad]="pageLoad"></page-loader>

@@ -1,0 +1,185 @@
+<div class="container">
+
+    <h1 *ngIf="company_name" class="h4 mt-4">{{ company_name | uppercase }}</h1>
+    <h6 *ngIf="company_owner" class="text-muted">Уполномоченное лицо: {{ company_owner.name }}</h6>
+
+    <section>
+        <div class="filter-block jumbotron p-2 special-color small white-text">
+            <form class="form-inline">
+                
+                <label for="s_month" class="mr-sm-2 mx-2">Месяц:</label>
+                <select [(ngModel)]="filterMonth" (change)="filter()" name="company" id="s_month" class="custom-select mb-2 mr-sm-2 mb-sm-0">
+                    <option [ngValue]="null" selected>Все</option>
+                    <option 
+                        *ngFor="let m of month; let i=index"
+                        [ngValue]="i + 1">
+                            {{ m }}
+                    </option>
+                </select>
+
+                <label for="s_year" class="mr-sm-2 mx-2">Год:</label>
+                <select [(ngModel)]="filterYear" (change)="filter()" name="company" id="s_year" class="custom-select mb-2 mr-sm-2 mb-sm-0">
+                    <option [ngValue]="null" selected>Все</option>
+                    <option 
+                        *ngFor="let y of years"
+                        [ngValue]="y">
+                            {{ y }}
+                    </option>
+                </select>
+
+                <button 
+                    *ngIf="'associate' | access"
+                    (click)="editItem = false; resetForm()" 
+                    class="btn btn-success col-sm-auto btn-sm mr-sm-2" 
+                    data-toggle="modal" data-target=".modal-add-nalog">Добавить запись</button>
+                
+                <button 
+                    *ngIf="hasDeleted && 'admin' | access" 
+                    class="btn btn-danger waves-light btn-sm col-sm-auto mar-top"  
+                    (click)="delete()" mdbRippleRadius>
+                    <i class="fa fa-trash mr-2" aria-hidden="true"></i>Удалить помеченные</button>
+
+            </form>
+        </div>
+
+        <!-- Table -->
+        <div *ngIf="allNalogiList.length > 0; then hasItems else noItems"></div>
+
+        <ng-template #hasItems>
+            <div class="table-responsive">
+                <table *ngIf="checkLength()" class="table small text-nowrap table-sm table-striped table-hover text-small text-center a-col-alter">
+                    <thead class="unique-color white-text">
+                        <tr>
+                            <th>Месяц / Год</th>
+                            <th>ФСС</th>
+                            <th>ФСС-НС</th>
+                            <th>ФОМС</th>
+                            <th>ПФР</th>
+                            <th>НДФЛ</th>
+                            <th>ЕНВД</th>
+                            <th>УСН</th>
+                            <th>НДС</th>
+                            <th>Приб.ФБ</th>
+                            <th>Приб. Суб. РФ</th>
+                            <th>Сумма</th>
+                            <th *ngIf="'associate' | access">Действия</th>
+                            <th><i class="fa fa-commenting-o" aria-hidden="true"></i></th>
+                        </tr>
+                    </thead>
+    
+                    <tbody>
+                        <ng-template ngFor let-n let-i="index" [ngForOf]="nalogiList">
+                                <!-- *ngIf="!(('ROLE_CLIENT' | role) && n._delete) && (n | taxShowClient)" -->
+                            <tr 
+                                [ngClass]="n._delete ? 'table-danger' : ''">
+                                <th class="align-middle"><strong>{{ n._month | month }} / {{ n._year }}</strong></th>
+                                <th class="align-middle" [class.text-muted]="!n._fss">{{ n._fss | summ }} <span class="text-muted">₽</span></th>
+                                <th class="align-middle" [class.text-muted]="!n._fss_ns">{{ n._fss_ns | summ }} <span class="text-muted">₽</span></th>
+                                <th class="align-middle" [class.text-muted]="!n._foms">{{ n._foms | summ }} <span class="text-muted">₽</span></th>
+                                <th class="align-middle" [class.text-muted]="!n._pfr">{{ n._pfr | summ }} <span class="text-muted">₽</span></th>
+                                <th class="align-middle" [class.text-muted]="!n._ndfl">{{ n._ndfl | summ }} <span class="text-muted">₽</span></th>
+                                <th class="align-middle" [class.text-muted]="!n._envd">{{ n._envd | summ }} <span class="text-muted">₽</span></th>
+                                <th class="align-middle" [class.text-muted]="!n._usn">{{ n._usn | summ }} <span class="text-muted">₽</span> </th>
+                                <th class="align-middle" [class.text-muted]="!n._nds">{{ n._nds | summ }} <span class="text-muted">₽</span></th>
+                                <th class="align-middle" [class.text-muted]="!n._profit_fb">{{ n._profit_fb | summ }} <span class="text-muted">₽</span></th>
+                                <th class="align-middle" [class.text-muted]="!n._profit_rf">{{ n._profit_rf | summ }} <span class="text-muted">₽</span></th>
+                                <th class="align-middle"><strong>{{ getSumm(n) | summ }}</strong> <span class="text-muted">₽</span></th>
+                                <th *ngIf="'associate' | access" class="text-center align-middle">
+    
+                                    <div class="dropdown show">
+                                    
+                                        <a class="btn btn-sm dropdown-toggle" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fa fa-cog" aria-hidden="true"></i>
+                                        </a>
+                                        
+                                        <div class="dropdown-menu dropdown-menu-right text-small p-2" aria-labelledby="dropdownMenuLink">
+    
+                                            <a (click)="formData = n" class="dropdown-item px-2" data-target=".modal-info" data-toggle="modal">
+                                                <i class="fa fa-info pointer mx-1" aria-hidden="true" title="Информация" ></i>
+                                                Информация
+                                            </a>
+
+                                            <a (click)="formData = n; editItem = true" class="dropdown-item px-2" 
+                                                data-toggle="modal"
+                                                data-target=".modal-add-nalog">
+                                                <i class="fa fa-pencil pointer mx-1" aria-hidden="true" title="Редактировать"></i>
+                                                Редактировать
+                                            </a>
+                
+                                            <a *ngIf="!n._delete" class="dropdown-item px-2"   (click)="markForDelete($event, n, true)">
+                                                <i class="fa fa-trash pointer mx-1" aria-hidden="true" title="Пометить на удаление"></i>
+                                                Пометить на удаление
+                                            </a>
+                
+                                            <a *ngIf="n._delete" class="dropdown-item px-2" (click)="markForDelete($event, n, false)">
+                                                <i class="fa fa-trash-o pointer mx-1" aria-hidden="true" title="Отменить удаление"></i>
+                                                Отменить удаление
+                                            </a>
+    
+                                        </div>
+                                        
+                                    </div>
+    
+                                </th>
+                                <th class="align-middle">
+                                    <a class="btn-icon m-0" *ngIf="n.comment" (click)="setCommentText(n)" data-toggle="modal" data-target=".modal-comment">
+                                        <i class="fa fa-commenting" aria-hidden="true"></i>
+                                    </a>
+                                </th>
+                            </tr>
+                        </ng-template>
+                    </tbody>
+                </table>
+
+                <div class="container">
+                    Всего: {{ countAll }} / <i class="fa fa-trash" aria-hidden="true"></i> {{ getCountDeleted() }}
+                </div>
+
+            </div>
+            
+            <pager (onPageChange)="pageChange($event)" [list]="allNalogiList"></pager>
+
+        </ng-template>
+
+        <ng-template #noItems>
+            <div class="alert alert-info pagination justify-content-center mt-4" role="alert">
+                <h3 class="alert-heading">Записи отсутствуют</h3>
+            </div>
+        </ng-template>
+
+    </section>
+
+</div>
+
+<tax-form
+    *ngIf="formData"
+    [editItem]="editItem" 
+    [formData]="formData" 
+    [companyId]="company_id"
+    (onUpdateList)="updateList()" >
+</tax-form>
+
+<!-- Modal Comment -->
+<div class="modal fade modal-comment">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Комментарий</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>{{ comment }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">закрыть</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ------------ -->
+
+<modal-tax-info *ngIf="'associate' | access" [formData]="formData"></modal-tax-info>
+
+<page-loader [pageLoad]="pageLoad"></page-loader>

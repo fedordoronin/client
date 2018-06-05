@@ -1,0 +1,132 @@
+<div class="container">
+
+    <h1 class="mt-4 h5">Компании <span *ngIf="companyOwner">пользователя: {{ companyOwner.name }}</span></h1>
+    
+     <!-- Search block -->
+    <div class="search-block p-2 col-12 jumbotron">
+
+        <form class="form form-inline">
+
+            <div class="form-group position-relative col-md-4 col-sm-12 p-0">
+                <input [(ngModel)]="i_search" autocomplete="off" name="search" type="text" class="form-control w-100" (input)="search()" placeholder="Поиск (Название или ИНН)">
+            </div>
+            
+            <button 
+                *ngIf="userId && 'admin' | access"
+                (click)="editMode = false; company = {}"
+                class="btn btn-sm btn-success ml-md-2 col-sm-auto"
+                data-toggle="modal" 
+                data-target=".modal-add-company">
+                <i class="fa fa-plus mr-2" aria-hidden="true"></i>Добавить компанию</button>
+    
+            <button *ngIf="hasDisabled && 'ROLE_ADMIN' | role" (click)="delete()" class="btn btn-sm btn-danger col-sm-auto mar-top ml-md-2" mdbRippleRadius>
+                <i class="fa fa-trash mr-2" aria-hidden="true"></i>Удалить помеченные</button>
+        </form>
+
+
+    </div>
+
+    <div *ngIf="companyList?.length > 0; then listCompanyTemplate else noItemsTemplate"></div>
+    
+    <!-- Company List -->
+    <ng-template #listCompanyTemplate>
+    
+        <div class="table-responsive">
+            <table class="table table-sm small table-striped table-hover text-nowrap a-col-alter" *ngIf="companyList?.length > 0">
+                <thead class="unique-color white-text">
+                    <tr>
+                        <th>#</th>
+                        <th>Компания</th>
+                        <th>ИНН</th>
+                        <th>КПП</th>
+                        <th>Email</th>
+                        <th class="text-center">Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-template ngFor let-c let-i="index" [ngForOf]="companyList">
+                        <tr [ngClass]="c._delete ? 'table-danger' : ''" *ngIf="!(('ROLE_CLIENT' | role) && c._delete)" class="hoverable align-middle">
+                            <th class="align-middle">{{ i + 1 }}</th>
+                            <th class="align-middle"><a [routerLink]="['/office/tax', c._id]" class="primary-text">{{ c.name | uppercase }}</a></th>
+                            <th class="align-middle">{{ c.inn }}</th>
+                            <th class="align-middle">{{ c.kpp }}</th>
+                            <th class="align-middle">{{ c.email }}</th>
+                            <th class="text-center align-middle">
+                                <ng-container *ngTemplateOutlet="actions; context: { c: c }"></ng-container>
+                            </th>
+                        </tr>
+                    </ng-template>
+                </tbody>
+            </table>
+        </div>
+    
+    </ng-template>
+
+    <ng-template #actions let-c="c">
+        <div class="dropdown show actions-btn">
+
+            <a class="btn btn-sm dropdown-toggle" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-cog" aria-hidden="true"></i>
+            </a>
+
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+
+                <a class="dropdown-item px-2" [routerLink]="['/office/tax', c._id]">
+                    <i class="fa fa-list-alt pointer mx-2" aria-hidden="true" title="Список налогов"></i>
+                    Список налогов
+                </a>
+
+                <a *ngIf="'admin' | access" class="dropdown-item px-2" (click)="editMode = true; company = c" data-toggle="modal" data-target=".modal-add-company">
+                    <i class="fa fa-pencil-square-o pointer mx-2" aria-hidden="true" title="Редактировать"></i>
+                    Редактировать
+                </a>
+
+                <a *ngIf="!c._delete && 'associate' | access" class="dropdown-item px-2" (click)="markForDelete($event, c, true)">
+                    <i class="fa fa-trash pointer mx-2" aria-hidden="true" title="Пометить на удаление"></i>
+                    Пометить на удаление
+                </a>
+
+                <a *ngIf="c._delete && 'associate' | access" class="dropdown-item px-2" (click)="markForDelete($event, c, false)">
+                    <i class="fa fa-trash-o pointer mx-2" aria-hidden="true" title="Отменить удаление"></i>
+                    Отменить удаление
+                </a>
+
+            </div>
+
+        </div>
+    </ng-template>
+    
+    <ng-template #noItemsTemplate>
+        <div *ngIf="companyList?.length == 0" class="container">
+            <div class="alert alert-warning pagination justify-content-center mt-4" role="alert">
+                <h3 class="alert-heading"> 
+                    Компании отсутствуют
+                </h3>
+            </div>
+        </div>
+    </ng-template>
+
+    <pager (onPageChange)="pageChange($event)" [list]="allCompanyList"></pager>
+
+    <section>
+        <div *ngIf="'ROLE_CLIENT' | role" class="raw small">
+            <div class="jumbotron justify-content-center mt-4 mx-auto" >
+                <h5>Актуализация начисленных налогов происходит:</h5>
+                <ul>
+                    <li><b>ФСС, ФСС НС, ФОМС, ПФР, НДФЛ</b> 7-го числа каждого месяца;</li>
+                    <li><b>ЕНВД</b> 15-го числа месяца (Апрель, Июль, Октябрь, Январь);</li>
+                    <li><b>УСН</b> Авансовый платёж 15-го числа месяца (Апрель, Июль, Октябрь), Годовой налог 15-го марта;</li>
+                    <li><b>Приб. ФБ, Приб. Суб. РФ</b> Авансовый платёж 25-го числа месяца (Апрель, Июль, Октябрь), Годовой налог 20-го марта;</li>
+                    <li><b>НДС</b> 22-го числа месяца (Апрель, Июль, Октябрь, Январь).</li>
+                </ul>
+                <p>Подробнее о налогах и сроках уплаты узнайте <a routerLink="/site/tax-info">здесь</a></p>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+
+<company-form (onUpdateCompanyList)="updateList()" [userId]="userId" [company]="company" [editMode]="editMode"></company-form>
+
+<page-loader [pageLoad]="pageLoad"></page-loader>

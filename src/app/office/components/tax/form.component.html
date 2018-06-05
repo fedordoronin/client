@@ -1,0 +1,211 @@
+<!-- Modal Create Company -->
+<div class="modal fade modal-add-nalog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form #f="ngForm">
+                <div class="modal-header">
+                    <h5 *ngIf="!editItem && 'associate' | access" class="modal-title">Добавить налоги и взносы для компании </h5>
+                    <h5 *ngIf="editItem && 'associate' | access" class="modal-title">Изменить налоги и взносы для компании </h5>
+                    <h5 *ngIf="'ROLE_CLIENT' | role" class="modal-title">Просмотр налогов и взносов для компании </h5>
+                    <span class="badge badge-info p-2 ml-4">{{ currentUser.position?.title }}</span>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body small">
+
+                    <div *ngIf="!editItem" class="form-group form-group row">
+
+                        <div class="col-md-4 m-2">
+                            <select class="custom-select" [(ngModel)]="formData._month" name="month" required>
+                                <option [ngValue]="null" selected>Месяц</option>
+                                <option 
+                                    *ngFor="let m of month; let i = index" 
+                                    [ngValue]="i + 1">{{ m }}</option>
+                            </select>
+                            <select class="custom-select" [(ngModel)]="formData._year" name="year" required>
+                                <option [ngValue]="null" selected>Год</option>
+                                <option *ngFor="let y of years" [ngValue]="y">{{ y }}</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-7 m-2">
+                            <ngb-alert [dismissible]="false" *ngIf="f.invalid">
+                                <strong>Внимание!</strong> Выберите год и месяц
+                            </ngb-alert>
+                        </div>
+
+                    </div>
+
+                    <div *ngIf="editItem">
+                        <ngb-alert [dismissible]="false">
+                            <strong>Месяц: </strong>{{ formData._month | month }} <strong>Год: </strong>{{ formData._year }}
+                        </ngb-alert>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 form-group">
+                            <label>ФСС</label>    
+                            <div class="md-form">
+                                <input
+                                    [(ngModel)]="formData._fss"
+                                    name="fss" 
+                                    type="number" 
+                                    class="form-control" 
+                                    placeholder="0,00" 
+                                    step="0.01"
+                                    [value]="formData._fss"
+                                    [readonly]="'accountant_salary' | permission">
+                            </div>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label>ФСС-НС</label>
+                            <div class="md-form">
+                                <input
+                                    [(ngModel)]="formData._fss_ns"
+                                    id="i_fss_ns"
+                                    name="fss_ns"
+                                    type="number"
+                                    class="form-control"
+                                    placeholder="0,00"
+                                    step="0.01"
+                                    [value]="formData._fss_ns"
+                                    [readonly]="'accountant_salary' | permission">
+                            </div>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label>ФОМС</label>
+                            <div class="md-form">
+                                <input 
+                                    [(ngModel)]="formData._foms"
+                                    name="foms" 
+                                    type="number" 
+                                    class="form-control" 
+                                    placeholder="0,00"
+                                    step="0.01"
+                                    [value]="formData._foms"
+                                    [readonly]="'accountant_salary' | permission">
+                            </div>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label>ПФР</label>
+                            <div class="md-form">
+                                <input 
+                                    [(ngModel)]="formData._pfr"
+                                    name="pfr" 
+                                    type="number" 
+                                    class="form-control"
+                                    placeholder="0,00"
+                                    step="0.01"
+                                    [value]="formData._pfr"
+                                    [readonly]="'accountant_salary' | permission">
+                            </div>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label>НДФЛ</label>
+                            <div class="md-form">
+                                <input 
+                                    [(ngModel)]="formData._ndfl"
+                                    name="ndfl" 
+                                    type="number" 
+                                    class="form-control" 
+                                    placeholder="0,00"
+                                    step="0.01"
+                                    [value]="formData._ndfl"
+                                    [readonly]="'accountant_salary' | permission">
+                            </div>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label>ЕНВД</label>
+                            <div class="md-form">
+                                <input 
+                                    [(ngModel)]="formData._envd"
+                                    name="envd" 
+                                    type="number" 
+                                    class="form-control" 
+                                    placeholder="0,00"
+                                    step="0.01"
+                                    [value]="formData._envd"
+                                    [readonly]="'accountant' | permission">
+                            </div>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label>УСН</label>
+                            <div class="md-form">
+                                <input 
+                                    [(ngModel)]="formData._usn"
+                                    name="usn" 
+                                    type="number" 
+                                    class="form-control"
+                                    placeholder="0,00"
+                                    step="0.01"
+                                    [value]="formData._usn"
+                                    [readonly]="'accountant' | permission">
+                            </div>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label>НДС</label>
+                            <div class="md-form">
+                                <input 
+                                    [(ngModel)]="formData._nds"
+                                    name="nds" 
+                                    type="number" 
+                                    class="form-control" 
+                                    placeholder="0,00"
+                                    step="0.01"
+                                    [value]="formData._nds"
+                                    [readonly]="'accountant' | permission">
+                            </div>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label>Прибыль ФБ</label>
+                            <div class="md-form">
+                                <input 
+                                    [(ngModel)]="formData._profit_fb"
+                                    name="profit_fb" 
+                                    type="number" 
+                                    class="form-control" 
+                                    placeholder="0,00"
+                                    step="0.01"
+                                    [value]="formData._profit_fb"
+                                    [readonly]="'accountant' | permission">
+                            </div>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label>Прибыль Субъекта РФ</label>
+                            <div class="md-form">
+                                <input 
+                                    [(ngModel)]="formData._profit_rf"
+                                    name="profit_rf" 
+                                    type="number" 
+                                    class="form-control" 
+                                    id="iProfit_rf" 
+                                    placeholder="0,00"
+                                    step="0.01"
+                                    [value]="formData._profit_rf"
+                                    [readonly]="'accountant' | permission">
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="'associate' | access" class="md-form form-group">
+                        <textarea 
+                            [(ngModel)]="formData.comment"
+                            style="min-height: 50px; height: 100px;"
+                            class="nd-textarea form-control" 
+                            name="comment" 
+                            cols="30" rows="10"
+                            placeholder="Комментарий"></textarea>
+                    </div>
+                </div>
+                <div *ngIf="'associate' | access" class="modal-footer">
+                    <button 
+                        [disabled]="!f.form.valid" 
+                        type="button" 
+                        class="btn btn-primary" 
+                        data-dismiss="modal" 
+                        (click)="!editItem? create() : edit()">{{ editItem? 'Изменить' : 'Добавить' }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

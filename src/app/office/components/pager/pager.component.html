@@ -1,0 +1,33 @@
+<!-- Pagination -->
+<div class="container">
+    <div class="row">
+        <div *ngIf="pager.pages && pager.pages.length"  class="text-center m-auto small">
+            <nav>
+                <ul class="pagination float-left">
+                    <li [ngClass]="{disabled:pager.currentPage === 1}" class="page-item pointer">
+                        <a (click)="setPage(1)" class="page-link pointer">&laquo;</a>
+                    </li>
+                    <li [ngClass]="{disabled:pager.currentPage === 1}" class="page-item pointer">
+                        <a (click)="setPage(pager.currentPage - 1)" class="page-link">&lsaquo;</a>
+                    </li>
+                    <li *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}" class="page-item pointer">
+                        <a (click)="setPage(page)" class="page-link">{{page}}</a>
+                    </li>
+                    <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}" class="page-item pointer">
+                        <a (click)="setPage(pager.currentPage + 1)" class="page-link">&rsaquo;</a>
+                    </li>
+                    <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}" class="page-item pointer">
+                        <a (click)="setPage(pager.totalPages)" class="page-link">&raquo;</a>
+                    </li>
+                </ul>
+                <div class="form-group float-right ml-2">
+                    <label for="count">Показать:</label>
+                    <select [(ngModel)]="count" id="count" class="custom-select" (change)="changeCount()">
+                        <option *ngFor="let c of counts" [ngValue]="c">{{ c }}</option>
+                    </select>
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- -->

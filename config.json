@@ -1,0 +1,6 @@
+{
+    "apiUrl" : "https://demo.hnh.li/api",
+    "mailing" : {
+        "from" : "Head&Heart <noreply@hnh.li>"
+    }
+}

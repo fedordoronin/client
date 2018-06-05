@@ -1,0 +1,87 @@
+<!-- Modal Create Company -->
+<div class="modal fade modal-add-company">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form #f="ngForm">
+                <div class="modal-header">
+                    <h5 *ngIf="!editMode" class="modal-title">Добавить новую компанию или ИП</h5>
+                    <h5 *ngIf="editMode" class="modal-title">Изменить компанию или ИП</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closeForm>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <ngb-alert [dismissible]="false" *ngIf="error">
+                    <strong>Ошибка!</strong> {{ error }}
+                </ngb-alert>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="company-name" class="validate">Название компании</label>
+                        <input 
+                            [(ngModel)]="company.name" 
+                            [ngClass]="{'is-valid' : iName.valid, 'is-invalid' : iName.invalid}"
+                            #iName="ngModel"
+                            name="company_name" 
+                            type="text" 
+                            class="form-control" 
+                            id="company-name" 
+                            placeholder="КАПИТАЛ ООО (ИВАНОВ И.И. ИП)" 
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="company-email">Email</label>
+                        <input 
+                            [(ngModel)]="company.email" 
+                            [ngClass]="{'is-valid' : iEmail.valid, 'is-invalid' : iEmail.invalid}"
+                            name="company_email" 
+                            type="email" 
+                            class="form-control" 
+                            id="company-email" 
+                            placeholder="Email" 
+                            #iEmail="ngModel"
+                            required
+                            email>
+                    </div>
+                    <div class="form-group">
+                        <label for="company-inn">ИНН</label>
+                        <input 
+                            [(ngModel)]="company.inn" 
+                            [ngClass]="{'is-valid' : iInn.valid, 'is-invalid' : iInn.invalid}"
+                            #iInn="ngModel"
+                            name="company_inn" 
+                            type="number" 
+                            class="form-control" 
+                            id="company-inn" 
+                            placeholder="ИНН (10 или 12 цифр)" 
+                            pattern="(\d{10,12}|0)"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="company-inn">КПП</label>
+                        <input 
+                            [(ngModel)]="company.kpp" 
+                            [ngClass]="{'is-valid' : iKpp.valid, 'is-invalid' : iKpp.invalid}"
+                            #iKpp="ngModel"
+                            name="company_kpp" 
+                            type="number" 
+                            class="form-control" 
+                            id="company-kpp" 
+                            placeholder="КПП">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button *ngIf="!editMode"
+                        [disabled]="!f.form.valid" 
+                        type="button" 
+                        class="btn btn-primary"
+                        (click)="create()">Добавить</button>
+
+                    <button *ngIf="editMode"
+                        [disabled]="!f.form.valid" 
+                        type="button" 
+                        class="btn btn-primary"
+                        (click)="update()">Изменить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

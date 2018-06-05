@@ -1,0 +1,65 @@
+<div class="modal-dialog cascading-modal" role="document">
+    <!--Content-->
+    <div class="modal-content">
+        
+        <!--Header-->
+        <div class="modal-header light-blue darken-3 white-text">
+            <h4 class="title"><i class="fa fa-sign-in mr-4"></i>Head&Heart Online</h4>
+        </div>
+        <!--Body-->
+        <div class="modal-body mb-0">
+            <ngb-alert [dismissible]="false" *ngIf="error">
+                <strong>Ошибка!</strong> {{ error }}
+            </ngb-alert>
+            <form #formLogin="ngForm">
+                <label >Email</label>
+                <div class="md-form form-sm form-group">
+                    <!-- <i class="fa fa-envelope prefix"></i> -->
+                    <input 
+                        [(ngModel)]="email" 
+                        name="email" 
+                        type="email" 
+                        id="inputEmail" 
+                        class="form-control" 
+                        placeholder="Email" required>
+                </div>
+                
+                <label>Пароль</label>
+                <div class="md-form form-sm">
+                    <!-- <i class="fa fa-lock prefix"></i> -->
+                    <input 
+                        [(ngModel)]="password" 
+                        name="pass
+                        word" 
+                        type="password" 
+                        id="inputPassword" 
+                        class="form-control" 
+                        placeholder="Пароль" required>
+                </div>
+                
+                <div class="text-center mt-1-half mt-4">
+
+                    <!-- Loader -->
+                    <div class="loader-sm hidden" id="loader-login">
+                        <div class="spinner">
+                            <div class="bounce1"></div>
+                            <div class="bounce2"></div>
+                            <div class="bounce3"></div>
+                        </div>
+                    </div>
+                    <!-- ----- -->
+
+                    <button [ngClass]="formLogin.invalid ? 'disabled' : ''" id="btn_login" class="btn btn-info mb-1 waves-effect waves-light" (click)="login($event)">
+                        Войти <i class="fa fa-check ml-1"></i>
+                    </button>
+                </div>
+                
+                <div class="bd-callout bd-callout-warning small mb-0">
+                    <p>Если вы не знаете или не помните Ваши данные для входа, обратитесь в офис Head&Heart или позвоните <br> по тел. +7(3852)99-88-98 (многоканальный).</p>
+                </div>   
+
+            </form>
+        </div>
+    </div>
+    <!--/.Content-->
+</div>
